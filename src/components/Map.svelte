@@ -9,12 +9,13 @@
 
   import { extent } from "d3-array";
 
-  import geoJson from "../data/states.json";
+  import geoJson from "../data/missouri-counties.json";
 
   export let data;
   export let width = 800;
   export let colorScales;
-  export let selectedVariable = "count";
+  export let selectedVariable = "pesticides";
+  export let propertyMap = {};
 
   $: height = width * 0.6;
 
@@ -26,10 +27,20 @@
   $: updatePaths = (fillVariable) => {
     // Merge data into GeoJSON features
     const mergedData = geoJson.features.map((feature) => {
-      const stateData = data.find((d) => d.state === feature.properties.NAME);
-      feature.properties.count = stateData ? stateData.count : null;
-      feature.properties.share = stateData ? stateData.share : null;
-      feature.properties.value = stateData ? stateData[fillVariable] : null;
+      const featureData = data.find(
+        (d) =>
+          d.fips.toString() ===
+          feature.properties.STATE + feature.properties.COUNTY,
+      );
+      feature.properties.pesticides = featureData
+        ? featureData[propertyMap.pesticides]
+        : null;
+      feature.properties.cancer = featureData
+        ? featureData[propertyMap.cancer]
+        : null;
+      feature.properties.value = featureData
+        ? featureData[propertyMap[fillVariable]]
+        : null;
       return feature;
     });
 
@@ -45,9 +56,9 @@
     // Create paths with fill color
     paths = mergedData.map((d) => ({
       d: pathGenerator(d),
-      state: d.properties.NAME,
-      count: d.properties.count?.toLocaleString(),
-      share: d.properties.share,
+      feature: d.properties.NAME,
+      pesticides: d.properties.pesticides,
+      cancer: d.properties.cancer,
       fill:
         d.properties.value !== null
           ? colorScales[fillVariable](d.properties.value)
@@ -76,18 +87,18 @@
   {/key}
 
   <g>
-    {#each paths as { d, state, count, share }}
+    {#each paths as { d, feature, pesticides, cancer }}
       <path
         {d}
         fill="transparent"
         stroke="#000"
         stroke-width="1"
         data-tippy-content={`
-          <b style="font-size: 1.2em;">${state}</b><br/>
+          <b style="font-size: 1.2em;">${feature} County</b><br/>
           ${
-            state && count
-              ? `Number of beavers killed: <b>${count}</b><br/>
-                 Percentage of total beavers killed: <b>${share}%</b>`
+            feature && pesticides
+              ? `Pesticides: <b>${pesticides}</b><br/>
+                 Cancer: <b>${cancer}</b>`
               : "No data"
           }
         
