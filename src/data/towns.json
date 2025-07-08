@@ -1,0 +1,27 @@
+[
+  {
+    "town": "Lake Village",
+    "latitude": 33.32429707,
+    "longitude": -91.28708756
+  },
+  {
+    "town": "Helena-West Helena",
+    "latitude": 34.5314208,
+    "longitude": -90.6135543
+  },
+  {
+    "town": "Elaine",
+    "latitude": 34.3089415,
+    "longitude": -90.85362538
+  },
+  {
+    "town": "Wilson",
+    "latitude": 35.56466861,
+    "longitude": -90.04063727
+  },
+  {
+    "town": "Joiner",
+    "latitude": 35.50839813,
+    "longitude": -90.15043706
+  }
+]
