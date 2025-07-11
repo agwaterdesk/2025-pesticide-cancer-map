@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { onMount } from "svelte";
 
   import { geoAlbersUsa, geoPath } from "d3-geo";
@@ -11,20 +13,32 @@
 
   import geoJson from "../data/missouri-counties.json";
 
-  export let data;
-  export let width = 800;
-  export let colorScales;
-  export let selectedVariable = "pesticides";
-  export let propertyMap = {};
+  /**
+   * @typedef {Object} Props
+   * @property {any} data
+   * @property {number} [width]
+   * @property {any} colorScales
+   * @property {string} [selectedVariable]
+   * @property {any} [propertyMap]
+   */
 
-  $: height = width * 0.6;
+  /** @type {Props} */
+  let {
+    data,
+    width = 800,
+    colorScales,
+    selectedVariable = "pesticides",
+    propertyMap = {}
+  } = $props();
 
-  let paths = [];
+  let height = $derived(width * 0.6);
 
-  $: projection = geoAlbersUsa().fitSize([width, height], geoJson);
-  $: pathGenerator = geoPath().projection(projection);
+  let paths = $state([]);
 
-  $: updatePaths = (fillVariable) => {
+  let projection = $derived(geoAlbersUsa().fitSize([width, height], geoJson));
+  let pathGenerator = $derived(geoPath().projection(projection));
+
+  let updatePaths = $derived((fillVariable) => {
     // Merge data into GeoJSON features
     const mergedData = geoJson.features.map((feature) => {
       const featureData = data.find(
@@ -64,9 +78,11 @@
           ? colorScales[fillVariable](d.properties.value)
           : "#ddd",
     }));
-  };
+  });
 
-  $: updatePaths(selectedVariable);
+  run(() => {
+    updatePaths(selectedVariable);
+  });
 
   onMount(() => {
     tippy("[data-tippy-content]", {
