@@ -18,14 +18,17 @@
     polling: 500,
   });
 
-  let overlayInfo;
-  let marker = null;
 
-  let width;
+  let width = $state();
+
+ const propertyMap = {
+    pesticides: "total_pest_per_sqmi",
+    cancer: "general_cancer_rate",
+  };
 
   const maxes = {
-    count: max(data, (d) => d.count),
-    share: max(data, (d) => d.share),
+    pesticides: max(data, (d) => d[propertyMap.pesticides]),
+    cancer: max(data, (d) => d[propertyMap.cancer]),
   };
 
   const createCustomColorScale = (colors, max) => {
@@ -35,13 +38,15 @@
       .interpolate(interpolateRgb); // Use RGB interpolation
   };
 
+ 
+
   const colorScales = {
-    count: createCustomColorScale(["#e5f5e0", "#6DA34D"], maxes.count), // Replace with your desired hex color for "count"
-    share: createCustomColorScale(["#deebf7", "#548687"], maxes.share), // Replace with your desired hex color for "share"
+    pesticides: createCustomColorScale(["#e5f5e0", "#6DA34D"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
+    cancer: createCustomColorScale(["#deebf7", "#548687"], maxes.cancer), // Replace with your desired hex color for "cancer"
   };
 
-  let selectedVariable = "count";
 
+  let selectedVariable = $state("pesticides");
 
   function generateNiceTicks(maxValue, tickCount) {
     // Use d3.ticks to generate the tick values
@@ -54,23 +59,23 @@
   }
 
   const buckets = {
-    count: generateNiceTicks(maxes.count, 5),
-    share: generateNiceTicks(maxes.share, 5),
+    pesticides: generateNiceTicks(maxes.pesticides, 5),
+    cancer: generateNiceTicks(maxes.cancer, 5),
   };
 
   const colors = {
-    count: generateNiceTicks(maxes.count, 5).map((c) => colorScales.count(c)),
-    share: generateNiceTicks(maxes.share, 5).map((c) => colorScales.share(c)),
+    pesticides: generateNiceTicks(maxes.pesticides, 5).map((c) => colorScales.pesticides(c)),
+    cancer: generateNiceTicks(maxes.cancer, 5).map((c) => colorScales.cancer(c)),
   };
 
   const suffixes = {
-    count: "",
-    share: "%",
+    pesticides: "",
+    cancer: "%",
   };
 
   const legendTitles = {
-    count: "Number of beavers killed",
-    share: "Percentage of total beavers killed",
+    pesticides: "Pesticides per square mile",
+    cancer: "Cancer rate per 100,000",
   };
 </script>
 
@@ -78,52 +83,43 @@
 <!-- Outer div must have class 'chart-container' don't change -->
 <div class="chart-container">
   <h1 class="headline">Beavers killed by USDA Wildlife Services in 2023</h1>
-  <p class="dek">
-    <!-- <span class="town orange" /> Corona is a community isolated from its state
-    due to the winding path of the Mississippi that forms the
-    <span class="border" />
-    border between Arkansas, Tennessee and Mississippi.
-    <span class="town white" />Indicate other towns along the Mississippi River. -->
-  </p>
 
-  <p class="sr-only">
-    A map showing river towns along the border of Arkansas, Tennessee and
-    Mississippi.
-  </p>
+  <p class="sr-only"></p>
 
   <div class="controls">
     <div class="toggle">
       <span class="dek">Shade states by</span>
       <div class="buttons">
         <button
-          class:active={selectedVariable == "count"}
-          style:--color={colors.count[3]}
-          on:click={() => (selectedVariable = "count")}>Number of beavers</button
+          class:active={selectedVariable == "pesticides"}
+          style:--color={colors.pesticides[3]}
+          onclick={() => (selectedVariable = "pesticides")}>Pesticides per square mile (kg)</button
         >
         <button
-          class:active={selectedVariable == "share"}
-          style:--color={colors.share[3]}
-          on:click={() => (selectedVariable = "share")}>Percentage of beavers</button
+          class:active={selectedVariable == "cancer"}
+          style:--color={colors.cancer[3]}
+          onclick={() => (selectedVariable = "cancer")}
+          >Cancer rate per 100k</button
         >
       </div>
     </div>
   </div>
 
-  <Legend
+  <!-- <Legend
     buckets={buckets[selectedVariable]}
     colors={colors[selectedVariable]}
     title={legendTitles[selectedVariable]}
     suffix={suffixes[selectedVariable]}
-  />
+  /> -->
 
   <div id="g-viz" bind:clientWidth={width}>
-    <Map {width} {data} {colorScales} {selectedVariable} />
+    <Map {width} {data} {colorScales} {selectedVariable} {propertyMap} />
   </div>
 
-  <div class="credit">
+  <!-- <div class="credit">
     Graphic by Jared Whalen /
     <a target="_blank" href="https://agwaterdesk.org/">Ag & Water Desk</a>
-  </div>
+  </div> -->
 </div>
 
 <style lang="scss">

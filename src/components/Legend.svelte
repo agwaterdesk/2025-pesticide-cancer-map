@@ -1,8 +1,19 @@
 <script>
-  export let buckets = []; // Array of bucket thresholds (e.g., [0, 1000, 2000, 3000, 4000, 5000])
-  export let colors = []; // Array of colors corresponding to the buckets
-  export let title = ""; // Title for the legend
-  export let suffix = ""; // Optional suffix (e.g., '%' or '')
+  /**
+   * @typedef {Object} Props
+   * @property {any} [buckets] - Array of bucket thresholds (e.g., [0, 1000, 2000, 3000, 4000, 5000])
+   * @property {any} [colors] - Array of colors corresponding to the buckets
+   * @property {string} [title] - Title for the legend
+   * @property {string} [suffix] - Optional suffix (e.g., '%' or '')
+   */
+
+  /** @type {Props} */
+  let {
+    buckets = [],
+    colors = [],
+    title = "",
+    suffix = ""
+  } = $props();
 
   let width = 200;
   let margin = 0;
@@ -15,7 +26,7 @@
   };
 
   // Calculate the width of each bucket
-  $: bucketWidth = width / (buckets.length - 1);
+  let bucketWidth = $derived(width / (buckets.length - 1));
 </script>
 
 <div class="legend">
