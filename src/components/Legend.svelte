@@ -33,7 +33,7 @@
   {#if title}
     <div class="legend-title">{title}</div>
   {/if}
-  <svg width={width + margin * 2 + (bucketWidth + 15)} height="40">
+  <svg width={width + margin * 2 + (bucketWidth + 15)+ 15} height="40">
     <g transform="translate({margin}, 0)">
       {#each buckets.slice(0, -1) as bucket, i}
         <!-- Draw bucket rectangles -->

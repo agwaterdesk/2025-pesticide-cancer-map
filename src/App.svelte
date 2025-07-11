@@ -10,7 +10,7 @@
   import { max } from "d3-array";
 
   import data from "./data/data.json";
-
+console.log(data[0].fips)
   // Handle responsive iframes for embeds
   import pym from "pym.js";
 
@@ -70,19 +70,21 @@
 
   const suffixes = {
     pesticides: "",
-    cancer: "%",
+    cancer: "",
   };
 
   const legendTitles = {
-    pesticides: "Pesticides per square mile",
-    cancer: "Cancer rate per 100,000",
+    pesticides: "Kilograms spread per square mile",
+    cancer: "Cases per 100K",
   };
 </script>
 
 <Window />
 <!-- Outer div must have class 'chart-container' don't change -->
 <div class="chart-container">
-  <h1 class="headline">Beavers killed by USDA Wildlife Services in 2023</h1>
+  <h1 class="headline">Cancer rates and Pesticide Usage by county</h1>
+
+  <div class="dek">TKTKTKTK</div> 
 
   <p class="sr-only"></p>
 
@@ -105,12 +107,12 @@
     </div>
   </div>
 
-  <!-- <Legend
+  <Legend
     buckets={buckets[selectedVariable]}
     colors={colors[selectedVariable]}
     title={legendTitles[selectedVariable]}
     suffix={suffixes[selectedVariable]}
-  /> -->
+  />
 
   <div id="g-viz" bind:clientWidth={width}>
     <Map {width} {data} {colorScales} {selectedVariable} {propertyMap} />
