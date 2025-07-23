@@ -93,6 +93,26 @@
       allowHTML: true,
     });
   });
+
+//Helper function to get tooltip content based on selected variable 
+function getTooltipContent(feature, pesticides, cancer, selectedVar) {
+    const countyName = `<b style="font-size: 1.2em;">${feature} County</b><br/>`;
+    
+    if (selectedVar === 'pesticides') {
+      return countyName + (pesticides !== null 
+        ? `Pesticides per sq mile: <b>${pesticides}</b>`
+        : "No pesticide data available");
+    } else if (selectedVar === 'cancer') {
+      return countyName + (cancer !== null 
+        ? `Cancer Rate per 100K: <b>${cancer}</b>`
+        : "No cancer data available");
+    } else {
+      // Fallback for other variables or if you want to show both
+      return countyName + (pesticides !== null && cancer !== null
+        ? `Pesticides per sq mile: <b>${pesticides}</b><br/>Cancer Rate per 100K: <b>${cancer}</b>`
+        : "No data available");
+    }
+  }
 </script>
 
 <svg {width} {height}>
@@ -109,17 +129,7 @@
         fill="transparent"
         stroke="#000"
         stroke-width="1"
-        data-tippy-content={`
-          <b style="font-size: 1.2em;">${feature} County</b><br/>
-          ${
-            feature && pesticides
-              ? `Pesticides: <b>${pesticides}</b><br/>
-                 Cancer: <b>${cancer}</b>`
-              : "No data"
-          }
-        
-   
-          `}
+        data-tippy-content={getTooltipContent(feature, pesticides, cancer, selectedVariable)}
         class="outline"
       ></path>
     {/each}
