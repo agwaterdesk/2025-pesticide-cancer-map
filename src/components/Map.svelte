@@ -34,6 +34,7 @@
   let height = $derived(width * 0.6);
 
   let paths = $state([]);
+  let tippyInstances = $state([]);
 
   let projection = $derived(geoMercator().fitSize([width, height], geoJson));
   let pathGenerator = $derived(geoPath().projection(projection));
@@ -84,15 +85,37 @@
     updatePaths(selectedVariable);
   });
 
-  onMount(() => {
-    tippy("[data-tippy-content]", {
+  function initializeTooltips() {
+    // Destroy existing instances first
+    if (tippyInstances.length > 0) {
+      tippyInstances.forEach(instance => {
+        instance.destroy();
+      });
+    }
+
+       // Create new tooltip instances
+       tippyInstances = tippy("[data-tippy-content]", {
       theme: "light",
       duration: 0,
       followCursor: true,
       plugins: [followCursor],
       allowHTML: true,
     });
+  }
+
+  onMount(() => {
+    initializeTooltips();
   });
+
+    // Reinitialize tooltips when selectedVariable changes
+    $effect(() => {
+    selectedVariable; // Subscribe to changes
+    if (paths.length > 0) {
+      // Small delay to ensure DOM is updated
+      setTimeout(initializeTooltips, 50);
+    }
+  });
+
 
 //Helper function to get tooltip content based on selected variable 
 function getTooltipContent(feature, pesticides, cancer, selectedVar) {
