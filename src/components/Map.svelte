@@ -76,7 +76,7 @@
       fill:
         d.properties.value !== null
           ? colorScales[fillVariable](d.properties.value)
-          : "#ddd",
+          : "ddd",
     }));
   });
 

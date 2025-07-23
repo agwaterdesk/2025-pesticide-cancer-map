@@ -1,3 +1,5 @@
+
+
 <script>
   import Window from "./components/Window.svelte";
   import Map from "./components/Map.svelte";
@@ -41,8 +43,8 @@ console.log(data[0].fips)
  
 
   const colorScales = {
-    pesticides: createCustomColorScale(["#e5f5e0", "#6DA34D"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
-    cancer: createCustomColorScale(["#deebf7", "#548687"], maxes.cancer), // Replace with your desired hex color for "cancer"
+    pesticides: createCustomColorScale(["#FEF5C1", "#FFE135"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
+    cancer: createCustomColorScale(["#97bfeb", "#135297"], maxes.cancer), // Replace with your desired hex color for "cancer"
   };
 
 
