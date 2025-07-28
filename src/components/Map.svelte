@@ -128,11 +128,11 @@ function getTooltipContent(feature, pesticides, cancer, selectedVar, top4_chems)
     
     if (selectedVar === 'pesticides') {
       return countyName + (pesticides !== null 
-        ? `Pesticides per sq mile: <b>${pesticides}</b> <br/> <br/>
-        Most prevalent pesticides:
-        <ul>
-          ${feature.top4_chems}
-          </ul>
+        ? `Pesticides per sq mile: <b>${pesticides} kg</b> <br/> <br/>
+        Most prevalent chemicals:
+        <div>
+          ${top4_chems?.split(",").map(d=>`<div>${d}</div>`).join("")}
+          </div>
         `
         : "No pesticide data available");
     } else if (selectedVar === 'cancer') {

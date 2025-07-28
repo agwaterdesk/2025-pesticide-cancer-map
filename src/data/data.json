@@ -259,7 +259,7 @@
         "target_pest_per_sqmi": 178.6,
         "total_chemicals": 123923.1,
         "total_pest_per_sqmi": 290.6,
-        "top4_chems": "GLYPHOSATE, ATRAZINE, METOLACHLOR-S, 2,4-D",
+        "top4_chems": "GLYPHOSATE, ATRAZINE, METOLACHLOR-S, 2&#44;4-D",
         "top4pct": 0.691,
         "general_cancer_rate": 390.2,
         "brain_cancer_rate": 0,
