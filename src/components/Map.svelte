@@ -34,9 +34,11 @@
   let height = $derived(width * 0.6);
 
   let paths = $state([]);
+
   let tippyInstances = $state([]);
 
   let projection = $derived(geoMercator().fitSize([width, height], geoJson));
+
   let pathGenerator = $derived(geoPath().projection(projection));
 
   let updatePaths = $derived((fillVariable) => {
@@ -83,7 +85,7 @@
           ? colorScales[fillVariable](d.properties.value)
           : "#ddd",
     }));
-    console.log(paths)
+
   });
 
   run(() => {
