@@ -43,8 +43,8 @@ console.log(data[0].fips)
  
 
   const colorScales = {
-    pesticides: createCustomColorScale(["#FEF5C1", "#FFE135"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
-    cancer: createCustomColorScale(["#97bfeb", "#135297"], maxes.cancer), // Replace with your desired hex color for "cancer"
+    pesticides: createCustomColorScale(["#FFC067", "#FF4D00"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
+    cancer: createCustomColorScale(["#97bfeb", "#0d3a6b"], maxes.cancer), // Replace with your desired hex color for "cancer"
   };
 
 
