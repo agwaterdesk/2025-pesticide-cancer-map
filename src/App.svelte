@@ -122,10 +122,10 @@ console.log(data[0].fips)
     <Map {width} {data} {colorScales} {selectedVariable} {propertyMap} />
   </div>
 
-  <!-- <div class="credit">
-    Graphic by Jared Whalen /
+  <div class="credit">
+    Graphic by Jared Whalen and Yasha Mikolajczak /
     <a target="_blank" href="https://agwaterdesk.org/">Ag & Water Desk</a>
-  </div> -->
+  </div>
 </div>
 
 <style lang="scss">
