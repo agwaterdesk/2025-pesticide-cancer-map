@@ -1,3 +1,5 @@
+
+
 <script>
   import Window from "./components/Window.svelte";
   import Map from "./components/Map.svelte";
@@ -10,7 +12,7 @@
   import { max } from "d3-array";
 
   import data from "./data/data.json";
-
+console.log(data[0].fips)
   // Handle responsive iframes for embeds
   import pym from "pym.js";
 
@@ -41,8 +43,8 @@
  
 
   const colorScales = {
-    pesticides: createCustomColorScale(["#e5f5e0", "#6DA34D"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
-    cancer: createCustomColorScale(["#deebf7", "#548687"], maxes.cancer), // Replace with your desired hex color for "cancer"
+    pesticides: createCustomColorScale(["#FEF5C1", "#FFE135"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
+    cancer: createCustomColorScale(["#97bfeb", "#135297"], maxes.cancer), // Replace with your desired hex color for "cancer"
   };
 
 
@@ -70,25 +72,29 @@
 
   const suffixes = {
     pesticides: "",
-    cancer: "%",
+    cancer: "",
   };
 
   const legendTitles = {
-    pesticides: "Pesticides per square mile",
-    cancer: "Cancer rate per 100,000",
+    pesticides: "Kilograms spread per square mile",
+    cancer: "Cases per 100K",
   };
 </script>
 
 <Window />
 <!-- Outer div must have class 'chart-container' don't change -->
 <div class="chart-container">
-  <h1 class="headline">Beavers killed by USDA Wildlife Services in 2023</h1>
+  <h1 class="headline">Cancer rates and pesticide usage by county</h1>
+
+  <div class="dek">Pesticide use is based on estimates of applied pesticides in kilograms per square mile; in every county the top four pesticides listed make up at least 50% of all pesticides applied (and often much more).
+    Cancer rates are per 100,000 people for all types of cancer. In Missouri the state’s overall incidence rate is 452 per 100,000 people. 
+    You can read the full methodology here </div> 
 
   <p class="sr-only"></p>
 
   <div class="controls">
     <div class="toggle">
-      <span class="dek">Shade states by</span>
+      <span class="dek">Shade counties by</span>
       <div class="buttons">
         <button
           class:active={selectedVariable == "pesticides"}
@@ -105,12 +111,12 @@
     </div>
   </div>
 
-  <!-- <Legend
+  <Legend
     buckets={buckets[selectedVariable]}
     colors={colors[selectedVariable]}
     title={legendTitles[selectedVariable]}
     suffix={suffixes[selectedVariable]}
-  /> -->
+  />
 
   <div id="g-viz" bind:clientWidth={width}>
     <Map {width} {data} {colorScales} {selectedVariable} {propertyMap} />

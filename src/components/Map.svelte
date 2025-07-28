@@ -3,7 +3,7 @@
 
   import { onMount } from "svelte";
 
-  import { geoAlbersUsa, geoPath } from "d3-geo";
+  import { geoMercator, geoPath } from "d3-geo";
 
   import tippy, { followCursor } from "tippy.js";
   import "tippy.js/dist/tippy.css";
@@ -35,7 +35,10 @@
 
   let paths = $state([]);
 
-  let projection = $derived(geoAlbersUsa().fitSize([width, height], geoJson));
+  let tippyInstances = $state([]);
+
+  let projection = $derived(geoMercator().fitSize([width, height], geoJson));
+
   let pathGenerator = $derived(geoPath().projection(projection));
 
   let updatePaths = $derived((fillVariable) => {
@@ -55,6 +58,9 @@
       feature.properties.value = featureData
         ? featureData[propertyMap[fillVariable]]
         : null;
+        feature.properties.top4_chems = featureData
+        ? featureData.top4_chems
+        : null;
       return feature;
     });
 
@@ -71,28 +77,72 @@
     paths = mergedData.map((d) => ({
       d: pathGenerator(d),
       feature: d.properties.NAME,
-      pesticides: d.properties.pesticides,
+      pesticides: d.properties.pesticides, 
       cancer: d.properties.cancer,
+      top4_chems: d.properties.top4_chems,
       fill:
         d.properties.value !== null
           ? colorScales[fillVariable](d.properties.value)
           : "#ddd",
     }));
+
   });
 
   run(() => {
     updatePaths(selectedVariable);
   });
 
-  onMount(() => {
-    tippy("[data-tippy-content]", {
+  function initializeTooltips() {
+    // Destroy existing instances first
+    if (tippyInstances.length > 0) {
+      tippyInstances.forEach(instance => {
+        instance.destroy();
+      });
+    }
+
+       // Create new tooltip instances
+       tippyInstances = tippy("[data-tippy-content]", {
       theme: "light",
       duration: 0,
       followCursor: true,
       plugins: [followCursor],
       allowHTML: true,
     });
+  }
+
+  onMount(() => {
+    initializeTooltips();
   });
+
+    // Reinitialize tooltips when selectedVariable changes
+    $effect(() => {
+    selectedVariable; // Subscribe to changes
+    if (paths.length > 0) {
+      // Small delay to ensure DOM is updated
+      setTimeout(initializeTooltips, 50);
+    }
+  });
+
+
+//Helper function to get tooltip content based on selected variable 
+function getTooltipContent(feature, pesticides, cancer, selectedVar, top4_chems) {
+    const countyName = `<b style="font-size: 1.2em;">${feature} County</b><br/>`;
+    
+    if (selectedVar === 'pesticides') {
+      return countyName + (pesticides !== null 
+        ? `Pesticides per sq mile: <b>${pesticides} kg</b> <br/> <br/>
+        Most prevalent chemicals:
+        <div>
+          ${top4_chems?.split(",").map(d=>`<div>${d}</div>`).join("")}
+          </div>
+        `
+        : "No pesticide data available");
+    } else if (selectedVar === 'cancer') {
+      return countyName + (cancer !== null 
+        ? `Cancer Rate per 100K: <b>${cancer}</b>`
+        : "No cancer data available");
+    }
+  }
 </script>
 
 <svg {width} {height}>
@@ -103,23 +153,13 @@
   {/key}
 
   <g>
-    {#each paths as { d, feature, pesticides, cancer }}
+    {#each paths as { d, feature, pesticides, cancer, top4_chems }}
       <path
         {d}
         fill="transparent"
         stroke="#000"
         stroke-width="1"
-        data-tippy-content={`
-          <b style="font-size: 1.2em;">${feature} County</b><br/>
-          ${
-            feature && pesticides
-              ? `Pesticides: <b>${pesticides}</b><br/>
-                 Cancer: <b>${cancer}</b>`
-              : "No data"
-          }
-        
-   
-          `}
+        data-tippy-content={getTooltipContent(feature, pesticides, cancer, selectedVariable, top4_chems)}
         class="outline"
       ></path>
     {/each}

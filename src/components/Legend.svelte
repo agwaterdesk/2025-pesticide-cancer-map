@@ -20,10 +20,16 @@
 
   // Helper to abbreviate large numbers
   const formatNumber = (value) => {
-    if (value >= 1_000_000) return `${Math.round(value / 1_000_000)}M`;
-    if (value >= 1_000) return `${Math.round(value / 1_000)}K`;
-    return value;
-  };
+  if (value >= 1_000_000) {
+    const formatted = (value / 1_000_000).toFixed(1);
+    return `${formatted.endsWith('.0') ? formatted.slice(0, -2) : formatted}M`;
+  }
+  if (value >= 1_000) {
+    const formatted = (value / 1_000).toFixed(1);
+    return `${formatted.endsWith('.0') ? formatted.slice(0, -2) : formatted}K`;
+  }
+  return value.toString();
+};
 
   // Calculate the width of each bucket
   let bucketWidth = $derived(width / (buckets.length - 1));
@@ -33,7 +39,7 @@
   {#if title}
     <div class="legend-title">{title}</div>
   {/if}
-  <svg width={width + margin * 2 + (bucketWidth + 15)} height="40">
+  <svg width={width + margin * 2 + (bucketWidth + 15)+ 15} height="40">
     <g transform="translate({margin}, 0)">
       {#each buckets.slice(0, -1) as bucket, i}
         <!-- Draw bucket rectangles -->
