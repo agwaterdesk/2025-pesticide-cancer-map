@@ -56,6 +56,9 @@
       feature.properties.value = featureData
         ? featureData[propertyMap[fillVariable]]
         : null;
+        feature.properties.top4_chems = featureData
+        ? featureData.top4_chems
+        : null;
       return feature;
     });
 
@@ -72,13 +75,15 @@
     paths = mergedData.map((d) => ({
       d: pathGenerator(d),
       feature: d.properties.NAME,
-      pesticides: d.properties.pesticides,
+      pesticides: d.properties.pesticides, 
       cancer: d.properties.cancer,
+      top4_chems: d.properties.top4_chems,
       fill:
         d.properties.value !== null
           ? colorScales[fillVariable](d.properties.value)
-          : "ddd",
+          : "#ddd",
     }));
+    console.log(paths)
   });
 
   run(() => {
@@ -118,22 +123,22 @@
 
 
 //Helper function to get tooltip content based on selected variable 
-function getTooltipContent(feature, pesticides, cancer, selectedVar) {
+function getTooltipContent(feature, pesticides, cancer, selectedVar, top4_chems) {
     const countyName = `<b style="font-size: 1.2em;">${feature} County</b><br/>`;
     
     if (selectedVar === 'pesticides') {
       return countyName + (pesticides !== null 
-        ? `Pesticides per sq mile: <b>${pesticides}</b>`
+        ? `Pesticides per sq mile: <b>${pesticides}</b> <br/> <br/>
+        Most prevalent pesticides:
+        <ul>
+          ${feature.top4_chems}
+          </ul>
+        `
         : "No pesticide data available");
     } else if (selectedVar === 'cancer') {
       return countyName + (cancer !== null 
         ? `Cancer Rate per 100K: <b>${cancer}</b>`
         : "No cancer data available");
-    } else {
-      // Fallback for other variables or if you want to show both
-      return countyName + (pesticides !== null && cancer !== null
-        ? `Pesticides per sq mile: <b>${pesticides}</b><br/>Cancer Rate per 100K: <b>${cancer}</b>`
-        : "No data available");
     }
   }
 </script>
@@ -146,13 +151,13 @@ function getTooltipContent(feature, pesticides, cancer, selectedVar) {
   {/key}
 
   <g>
-    {#each paths as { d, feature, pesticides, cancer }}
+    {#each paths as { d, feature, pesticides, cancer, top4_chems }}
       <path
         {d}
         fill="transparent"
         stroke="#000"
         stroke-width="1"
-        data-tippy-content={getTooltipContent(feature, pesticides, cancer, selectedVariable)}
+        data-tippy-content={getTooltipContent(feature, pesticides, cancer, selectedVariable, top4_chems)}
         class="outline"
       ></path>
     {/each}
