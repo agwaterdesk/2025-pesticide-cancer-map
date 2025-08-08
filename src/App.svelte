@@ -40,7 +40,6 @@ console.log(data[0].fips)
       .interpolate(interpolateRgb); // Use RGB interpolation
   };
 
- 
 
   const colorScales = {
     pesticides: createCustomColorScale(["#FFC067", "#FF4D00"], maxes.pesticides), // Replace with your desired hex color for "pesticides"
