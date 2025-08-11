@@ -87,7 +87,7 @@ console.log(data[0].fips)
 
   <div class="dek">Pesticide use is based on estimates of applied pesticides in kilograms per square mile; in every county the top four pesticides listed make up at least 50% of all pesticides applied (and often much more).
     Cancer rates are per 100,000 people for all types of cancer. In Missouri the state’s overall incidence rate is 452 per 100,000 people. 
-    You can read the full methodology here </div> 
+     </div> 
 
   <p class="sr-only"></p>
 
